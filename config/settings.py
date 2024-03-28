@@ -1,22 +1,20 @@
 from pathlib import Path
+import os
+from dotenv import dotenv_values
+
+config = dotenv_values(".env.secrets") 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = config["SECRET_KEY"]
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+DEBUG = config["DEBUG"]
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_r)s+)hhd=rl85c#h(uvz41&jf+k5!@o7+5npof8b^p0i=en7c'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-# Application definition
+if DEBUG == 'True':
+    ALLOWED_HOSTS = ['*']
+else:
+    raise Exception("Allowed hosts not set for production")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,12 +61,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG == 'True':
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "postgres",
+            "USER": config["USERNAME"],
+            "PASSWORD": config["DB_PASSWORD"],
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
     }
-}
+else:
+    raise Exception("Database configuration not set for production")
 
 
 # Password validation
