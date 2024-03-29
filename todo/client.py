@@ -14,7 +14,6 @@ def get_tokens(username, password):
     response = requests.post(url, data=data)
     json_response = response.json()
 
-    # Capture the JSON response in variables
     access_token = json_response.get("access")
     refresh_token = json_response.get("refresh")
 
