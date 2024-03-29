@@ -1,10 +1,11 @@
 from pathlib import Path
 import os
 from dotenv import dotenv_values
+from datetime import timedelta
+
 
 config = dotenv_values(".env.secrets") 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config["SECRET_KEY"]
@@ -25,12 +26,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'todo' # Add this line
+    "corsheaders",
+    'djoser',
+    'todo'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -38,13 +42,25 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if DEBUG == 'True':
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ]
+else:
+    raise Exception("CORS_ALLOWED_ORIGINS not set for production")
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=600),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7)
+}
 
 ROOT_URLCONF = 'config.urls'
 
