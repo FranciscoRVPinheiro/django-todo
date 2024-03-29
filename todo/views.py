@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from .models import Task, User
 from rest_framework import generics
 from .serializers import BaseTasksSerializer, UserSerializer
