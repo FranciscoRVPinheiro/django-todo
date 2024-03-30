@@ -56,8 +56,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    "DEFAULT_RENDERER_CLASSES": (
+    "rest_framework.renderers.JSONRenderer",
+    "todo.renderers.CustomBrowsableAPIRenderer",
     )
 }
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=600),
