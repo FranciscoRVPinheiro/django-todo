@@ -4,9 +4,18 @@ from .serializers import BaseTasksSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissions import IsOwner
 from django.conf import settings
-import jwt
 
 class ListUsers(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class DeleteUser(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class UpdateUser(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
