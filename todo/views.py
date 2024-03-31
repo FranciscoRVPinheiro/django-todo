@@ -4,9 +4,18 @@ from .serializers import BaseTasksSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissions import IsOwner
 from django.conf import settings
-import jwt
 
 class ListUsers(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class DeleteUser(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class UpdateUser(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -25,16 +34,12 @@ class CreateTask(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        token = self.request.headers.get('Authorization').split(' ')[1]
-        decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        user = User.objects.get(id=decoded_token['user_id'])
-        serializer.save(user=user)
-
-    def create(self, request, *args, **kwargs):
-        request.data['user'] = self.request.user.id
-        return super().create(request, *args, **kwargs)
-
-
+        token = self.request.auth
+        if token is not None:
+            user_id = token.user_id
+            user = User.objects.get(id=user_id)
+            serializer.save(user=user)
+            
 class TaskDetail(generics.RetrieveAPIView):
     queryset = Task.objects.all()
     serializer_class = BaseTasksSerializer
