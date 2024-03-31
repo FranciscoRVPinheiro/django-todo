@@ -63,11 +63,6 @@ REST_FRAMEWORK = {
 }
 
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=600),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-}
-
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
