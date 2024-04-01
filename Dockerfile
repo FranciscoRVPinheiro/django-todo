@@ -1,11 +1,11 @@
-FROM python:3.10
+FROM python:3.10.0-slim-buster
 
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONWARNINGS ignore
 RUN mkdir /code
 WORKDIR /code
 
 COPY . /code/
 
-RUN pip3 install -r requirements.txt
-
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN pip install -r requirements.txt
