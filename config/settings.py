@@ -7,11 +7,9 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECRET_KEY = os.getenv("SECRET_KEY")
-SECRET_KEY = 'hbjksndcsjdcçiosmdkds45d787d441v541v747v'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-# DEBUG = os.getenv("DEBUG")
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
@@ -101,30 +99,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# if DEBUG:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": os.getenv("DB_NAME"),
-#             "USER": os.getenv("USERNAME"),
-#             "PASSWORD": os.getenv("DB_PASSWORD"),
-#             "HOST": os.getenv("HOST"),
-#             "PORT": os.getenv("PORT"),
-#         }
-#     }
-# else:
-#     raise Exception("Database configuration not set for production")
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": 'postgres',
-        "USER": 'postgres',
-        "PASSWORD": 'postgres',
-        "HOST": 'db',
-        "PORT": 5432,
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("USERNAME"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("HOST"),
+            "PORT": os.getenv("PORT"),
+        }
     }
-}
+else:
+    raise Exception("Database configuration not set for production")
 
 # DATABASES = {
 #     "default": {
