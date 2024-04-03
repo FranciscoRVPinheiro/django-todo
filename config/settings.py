@@ -18,6 +18,7 @@ else:
     raise Exception("Allowed hosts not set for production")
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,6 +33,8 @@ INSTALLED_APPS = [
     'djoser',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    
+
     
 ]
 
@@ -78,6 +81,12 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+JAZZMIN_SETTINGS = {
+    "site_title": "Memory Palace",
+    "site_header": "Memory Palace",
+    "welcome_sign": "Welcome to Memory Palace",
+    "site_brand": "Memory Palace",
+}
 
 ROOT_URLCONF = 'config.urls'
 
