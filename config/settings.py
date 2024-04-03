@@ -1,23 +1,24 @@
 from pathlib import Path
-import os
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from datetime import timedelta
+import os
+from todo.auth import BearerAuthentication
 
-
-config = dotenv_values(".env.secrets") 
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config["SECRET_KEY"]
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = config["DEBUG"]
+DEBUG = os.getenv("DEBUG")
 
-if DEBUG == 'True':
+if DEBUG:
     ALLOWED_HOSTS = ['*']
 else:
     raise Exception("Allowed hosts not set for production")
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,10 +34,12 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'drf_spectacular_sidecar',
     
+
+    
 ]
 
 SPECTACULAR_SETTINGS = {
-    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_DIST': 'SIDECAR',  
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
 
@@ -44,7 +47,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Another todo app',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
 }
 
 MIDDLEWARE = [
@@ -58,10 +60,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG == 'True':
+if DEBUG:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:8000",
+        "http://localhost:8080",
         "http://127.0.0.1:8000",
+        "http://127.0.0.1:8080",
     ]
 else:
     raise Exception("CORS_ALLOWED_ORIGINS not set for production")
@@ -69,7 +73,7 @@ else:
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'todo.auth.BearerAuthentication',
     ),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -77,6 +81,12 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+JAZZMIN_SETTINGS = {
+    "site_title": "Memory Palace",
+    "site_header": "Memory Palace",
+    "welcome_sign": "Welcome to Memory Palace",
+    "site_brand": "Memory Palace",
+}
 
 ROOT_URLCONF = 'config.urls'
 
@@ -99,26 +109,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-if DEBUG == 'True':
+if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "postgres",
-            "USER": config["USERNAME"],
-            "PASSWORD": config["DB_PASSWORD"],
-            "HOST": "localhost",
-            "PORT": "5432",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("USERNAME"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("HOST"),
+            "PORT": os.getenv("PORT"),
         }
     }
 else:
     raise Exception("Database configuration not set for production")
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -136,9 +147,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -151,7 +159,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
