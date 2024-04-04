@@ -5,6 +5,16 @@ services:
     image: postgres:16.2-alpine3.19
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'",
+        ]
+      interval: 5s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
     ports:
       - '5432:5432'
     env_file:
@@ -17,6 +27,7 @@ services:
       - .:/code
     ports:
       - '8000:8000'
+    restart: on-failure
     depends_on:
       - db
 
