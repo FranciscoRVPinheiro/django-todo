@@ -1,6 +1,6 @@
-from .models import Task, User
+from .models import Task, User, Tag
 from rest_framework import generics
-from .serializers import BaseTasksSerializer, UserSerializer
+from .serializers import BaseTasksSerializer, UserSerializer, TagsSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissions import IsOwner
 from django.conf import settings
@@ -54,3 +54,22 @@ class DeleteTask(generics.DestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = BaseTasksSerializer
     permission_classes = [IsAuthenticated, IsOwner]
+
+class ListTags(generics.ListAPIView):
+    serializer_class = TagsSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        return Tag.objects.filter(user=self.request.user)
+
+class CreateTag(generics.CreateAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        token = self.request.auth
+        if token is not None:
+            user_id = token.user_id
+            user = User.objects.get(id=user_id)
+            serializer.save(user=user)
