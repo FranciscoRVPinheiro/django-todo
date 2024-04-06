@@ -1,6 +1,20 @@
 from django.contrib import admin
 from django.urls import path
-from .views import CreateTask, ListTasks, TaskDetail, UpdateTask, DeleteTask, ListUsers, DeleteUser, UpdateUser, ListTags, CreateTag
+from .views import (
+    CreateTask, 
+    ListTasks, 
+    TaskDetail, 
+    UpdateTask, 
+    DeleteTask, 
+    ListUsers, 
+    DeleteUser, 
+    UpdateUser, 
+    ListTags, 
+    CreateTag, 
+    ListTasksByTag, 
+    ListTagsByTask,
+    AddTagToTask
+)
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.conf.urls.static import static
 from django.conf import settings
@@ -19,5 +33,8 @@ urlpatterns = [
 
     path('api/v1/list-tags/', ListTags.as_view()),
     path('api/v1/create-tag/', CreateTag.as_view()),
+    path('api/v1/list-tasks-by-tag/<int:pk>', ListTasksByTag.as_view(), name='list-tasks-by-tag'),
+    path('api/v1/list-tags-by-task/<int:pk>', ListTagsByTask.as_view(), name='list-tags-by-task'),
+    path('api/v1/add-tag-to-task/<int:pk>', AddTagToTask.as_view(), name='add-tag-to-task'),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) 

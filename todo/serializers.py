@@ -5,12 +5,11 @@ class BaseTasksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
-        read_only_fields = ['user', 'created_at']
+        read_only_fields = ['user', 'created_at', 'tag']
 
         extra_kwargs = {
             'title': {'required': True},
-            'completed': {'required': True},
-            'tag': {'required': False}
+            'completed': {'required': True}
         }
 
 class TagsSerializer(serializers.ModelSerializer):
