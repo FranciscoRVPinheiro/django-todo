@@ -89,8 +89,9 @@ class ListTagsByTask(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
+        user = self.request.user
         pk = self.kwargs['pk']
-        return Tag.objects.filter(task=pk)
+        return Tag.objects.filter(user=user.id, task=pk)
 
 class AddTagToTask(generics.UpdateAPIView):
     queryset = Task.objects.all()
@@ -104,3 +105,4 @@ class AddTagToTask(generics.UpdateAPIView):
         task.tag.add(tag)
         task.save()
         serializer.save()
+        return task
